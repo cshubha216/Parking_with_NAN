@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <style name="ButtonStyle">
+    <item name="android:layout_width">0dp</item>
+    <item name="android:height">100dp</item>
+    <item name="android:layout_height">wrap_content</item>
+    <item name="android:layout_columnWeight">1</item>
+    <item name="android:layout_margin">4dp</item> <!-- Margin for spacing between buttons -->
+    <item name="android:padding">8dp</item> <!-- Padding within the buttons -->
+  </style>
+</resources>

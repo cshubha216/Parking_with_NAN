@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="80sp"
+        android:paddingLeft="20px"
+        android:paddingTop="20sp"
+        android:text="Are you sure you want to select this Slot"
+        android:textAlignment="center"
+        android:textColor="#0D0C0C"
+        android:textSize="20sp" />
+
+    <Button
+        android:id="@+id/acceptButton"
+        android:layout_width="match_parent"
+        android:backgroundTint="#4AA5F3"
+
+        android:layout_height="wrap_content"
+
+        android:text="Accept" />
+
+    <Button
+        android:id="@+id/declineButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Decline" />
+</LinearLayout>
