@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.chaquo.python'
 
 android {
     signingConfigs {
@@ -17,6 +18,24 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+
+        python{
+            pip{
+                install "numpy"
+                install "opencv-python"
+                install "cvzone"
+            }
+        }
+        sourceSets{
+            main{
+                python{
+                    srcDirs = ["src/main/python"]
+                }
+            }
+        }
+        ndk {
+            abiFilters "armeabi-v7a", "arm64-v8a", "x86", "x86_64"
+        }
     }
     buildTypes {
         release {
