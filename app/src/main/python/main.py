@@ -55,9 +55,9 @@ def checkSpaces():
 
     #cvzone.putTextRect(img, f'Free: {spaces}/{len(posList)}', (50, 60), thickness=3, offset=20,
                   #     colorR=(0, 200, 0))
-    file1 = open("myfile.txt", "w+")
-    file1.write(str(pos_bits))
-    file1.close()
+    #file1 = open("parking_bits.txt", "w+")
+    #file1.write(bin(pos_bits))
+    #file1.close()
     cvzone.putTextRect(img, f'pos_bits: {pos_bits}', (50, 60), thickness=3, offset=20,
                        colorR=(0, 200, 0))
     return pos_bits
