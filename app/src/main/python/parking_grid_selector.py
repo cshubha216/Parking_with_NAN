@@ -1,7 +1,7 @@
 import cv2
 import pickle
 
-width, height = 107, 48
+width, height = 300, 114
 
 try:
     with open('CarParkPos', 'rb') as f:
@@ -24,7 +24,19 @@ def mouseClick(events, x, y, flags, params):
 
 
 while True:
-    img = cv2.imread('carParkImg.png')
+    img = cv2.imread('car_park_img_self_2.jpg')
+    # percent by which the image is resized
+    scale_percent = 100
+
+    # calculate the 50 percent of original dimensions
+    width1 = int(img.shape[1] * scale_percent / 100)
+    height1 = int(img.shape[0] * scale_percent / 100)
+
+    # dsize
+    dsize = (width1, height1)
+
+    # resize image
+    img = cv2.resize(img, dsize)
     for pos in posList:
         cv2.rectangle(img, pos, (pos[0] + width, pos[1] + height), (255, 0, 255), 2)
 
