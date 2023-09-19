@@ -1,6 +1,7 @@
 package net.mobilewebprint.nan;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.SurfaceTexture;
@@ -13,6 +14,7 @@ import android.media.MediaScannerConnection;
 import android.os.Bundle;
 import android.view.Surface;
 import android.view.TextureView;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -30,7 +32,7 @@ import java.io.IOException;
 import java.util.Collections;
 
 
-public class park_detection extends AppCompatActivity {
+public class ParkDetection extends AppCompatActivity {
     private static final int CAMERA_PERMISSION_REQUEST_CODE = 100;
     private CameraDevice cameraDevice;
     private TextureView img_view;
@@ -201,4 +203,10 @@ public class park_detection extends AppCompatActivity {
         }
     }
 
+    public void onClickClose(View view) {
+        Intent returnIntent = new Intent();
+        returnIntent.putExtra("bit_string", captureTextureViewAsJpeg());
+        setResult(RESULT_OK, returnIntent);
+        finish();
+    }
 }

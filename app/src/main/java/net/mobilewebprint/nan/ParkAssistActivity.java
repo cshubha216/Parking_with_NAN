@@ -28,6 +28,7 @@ import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -105,6 +106,7 @@ public class ParkAssistActivity extends AppCompatActivity {
     private byte[] otherIP;
     private byte[] msgtosend;
     private String actionData;
+    private int bitString;
 
     /**
      * Handles initialization (creation) of the activity.
@@ -204,6 +206,11 @@ public class ParkAssistActivity extends AppCompatActivity {
                 peerHandle = peerHandle_;
                 // Why checking getSlots here .... 
                 if (data.equals("getSlots")) {
+                    Intent getCVDataIntent = new Intent(getApplicationContext(), ParkDetection.class);
+                    startActivityForResult(getCVDataIntent, 1);
+                    if (bitString != -1) {
+//                        publishDiscoverySession.sendMessage(peerHandle, MAC_ADDRESS_MESSAGE, bitString.byteValue());
+                    }
                     publishDiscoverySession.sendMessage(peerHandle, MAC_ADDRESS_MESSAGE, Constant.getSlotsDataAsBytes());
                 } else {
                     setSlot(message);
@@ -825,6 +832,15 @@ public class ParkAssistActivity extends AppCompatActivity {
         Thread clientThread = new Thread(clientTask);
         clientThread.start();
 
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            Toast.makeText(this, Integer.toString(data.getIntExtra("bit_string", 0)), Toast.LENGTH_LONG).show();
+            bitString = data.getIntExtra("bit_string", -1);
+        }
     }
 
     void showPopUp() {
