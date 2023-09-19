@@ -251,7 +251,7 @@ public class ParkAssistActivity extends AppCompatActivity {
                 super.onServiceDiscovered(peerHandle, serviceSpecificInfo, matchFilter);
                 peerHandle = peerHandle_;
                 if (peerHandle_ != null) {
-                    setContentView(R.layout.parking_detection_layout);
+                    setContentView(R.layout.parking_user_view);
                     setSlot(null);
                 }
                 if (subscribeDiscoverySession != null && peerHandle != null) {
