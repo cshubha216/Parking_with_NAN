@@ -206,11 +206,6 @@ public class ParkAssistActivity extends AppCompatActivity {
                 peerHandle = peerHandle_;
                 // Why checking getSlots here .... 
                 if (data.equals("getSlots")) {
-                    Intent getCVDataIntent = new Intent(getApplicationContext(), ParkDetection.class);
-                    startActivityForResult(getCVDataIntent, 1);
-                    if (bitString != -1) {
-//                        publishDiscoverySession.sendMessage(peerHandle, MAC_ADDRESS_MESSAGE, bitString.byteValue());
-                    }
                     publishDiscoverySession.sendMessage(peerHandle, MAC_ADDRESS_MESSAGE, Constant.getSlotsDataAsBytes());
                 } else {
                     setSlot(message);
