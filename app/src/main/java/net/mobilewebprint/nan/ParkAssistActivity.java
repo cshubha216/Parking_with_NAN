@@ -305,7 +305,7 @@ public class ParkAssistActivity extends AppCompatActivity {
         if(message!=null)
         Constant.updateSlot(message);
         final ArrayList<SlotData> slots = Constant.getStaticSlots();
-        for (int i = 0; i < 9; i++) {
+        for (int i = 0; i < 10; i++) {
             final int index = i;
             int buttonId = getResources().getIdentifier("button" + i, "id", getPackageName());
             Button button = findViewById(buttonId);

@@ -50,6 +50,7 @@ class Constant {
         slots.add(new SlotData("a07", ""));
         slots.add(new SlotData("a08", ""));
         slots.add(new SlotData("a09", ""));
+        slots.add(new SlotData("a10", ""));
         return slots;
     }
 
