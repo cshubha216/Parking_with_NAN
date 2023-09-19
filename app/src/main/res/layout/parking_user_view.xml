@@ -26,7 +26,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Free Spaces"
+            android:text="@string/free_spaces"
             android:layout_gravity="center_vertical"
             android:layout_marginStart="8dp"
             android:textColor="#FFFFFF"/>
@@ -41,7 +41,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Occupied Spaces"
+            android:text="@string/occupied_spaces"
             android:layout_gravity="center_vertical"
             android:layout_marginStart="8dp"
             android:textColor="#FFFFFF"/>
@@ -157,5 +157,28 @@
             android:id="@+id/button9"
             android:background="@drawable/parking_button_free"/>
     </GridLayout>
+
+    <LinearLayout
+        android:id="@+id/debugBoxLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:background="#2b2b2b"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/debug_information"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp"
+            android:layout_margin="8dp" />
+
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

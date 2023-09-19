@@ -59,4 +59,7 @@
         vestibulum. Fusce dictum libero quis erat maximus, vitae volutpat diam dignissim.
     </string>
     <string name="parking_space">parkingSpace</string>
+    <string name="debug_information">Debug Information</string>
+    <string name="occupied_spaces">Occupied Spaces</string>
+    <string name="free_spaces">Free Spaces</string>
 </resources>
