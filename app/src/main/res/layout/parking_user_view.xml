@@ -1,18 +1,116 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/parkingLayout"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp">
 
-    <ImageView
-        android:id="@+id/parkingView"
+    >
+    <GridLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:contentDescription="@string/parking_space"
-        android:rotation="90"
-        android:scaleType="fitXY"
-        app:srcCompat="@mipmap/parking_space_foreground" />
+        android:columnCount="2"
+        android:rowCount="5"
+        android:padding="16dp"
+        android:background="#2b2b2b"
 
-</RelativeLayout>
+
+        android:layout_gravity="center">
+        <Button
+            android:layout_width="0dp"
+            style="@style/ButtonStyle"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:id="@+id/button0"
+            android:paddingRight="4dp"
+            android:background="@drawable/parking_button" />
+
+        <!-- Row 1, Column 2 -->
+        <Button
+            android:layout_width="0dp"
+            style="@style/ButtonStyle"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:id="@+id/button1"
+            android:paddingRight="4dp"
+            android:background="@drawable/parking_button"/>
+
+        <!-- Row 1, Column 3 -->
+        <Button
+            android:layout_width="0dp"
+            style="@style/ButtonStyle"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:paddingRight="4dp"
+            android:id="@+id/button2"
+            android:background="@drawable/parking_button"/>
+
+        <!-- Row 2, Column 1 -->
+        <Button
+            android:layout_width="0dp"
+            style="@style/ButtonStyle"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:id="@+id/button3"
+            android:background="@drawable/parking_button"/>
+
+        <!-- Row 2, Column 2 -->
+        <Button
+            android:layout_width="0dp"
+            style="@style/ButtonStyle"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:paddingRight="4dp"
+            android:id="@+id/button4"
+            android:background="@drawable/parking_button"/>
+
+        <!-- Row 2, Column 3 -->
+        <Button
+            android:layout_width="0dp"
+            style="@style/ButtonStyle"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:id="@+id/button5"
+            android:paddingRight="4dp"
+            android:background="@drawable/parking_button"/>
+
+        <!-- Row 3, Column 1 -->
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:paddingRight="4dp"
+            style="@style/ButtonStyle"
+            android:id="@+id/button6"
+            android:background="@drawable/parking_button"/>
+
+        <!-- Row 3, Column 2 -->
+        <Button
+            android:layout_width="0dp"
+            style="@style/ButtonStyle"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:paddingRight="4dp"
+            android:id="@+id/button7"
+            android:background="@drawable/parking_button"/>
+
+        <!-- Row 3, Column 3 -->
+        <Button
+            android:layout_width="0dp"
+            style="@style/ButtonStyle"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:paddingRight="4dp"
+            android:id="@+id/button8"
+            android:background="@drawable/parking_button"/>
+        <Button
+            android:layout_width="0dp"
+            style="@style/ButtonStyle"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:paddingRight="4dp"
+            android:id="@+id/button9"
+            android:background="@drawable/parking_button"/>
+    </GridLayout>>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
