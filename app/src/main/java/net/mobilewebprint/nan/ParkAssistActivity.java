@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.ConnectivityManager.NetworkCallback;
 import android.net.LinkProperties;
@@ -313,6 +314,7 @@ public class ParkAssistActivity extends AppCompatActivity {
             Button button = findViewById(buttonId);
             if (button != null) {
                 button.setText(slots.get(i).slotId);
+                button.setTextColor(Color.YELLOW);
                 if (slots.get(i).subId.length() == 0)
                     button.setBackgroundResource(R.drawable.parking_button);// Change the text of the button
                 else {
