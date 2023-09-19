@@ -314,7 +314,7 @@ public class ParkAssistActivity extends AppCompatActivity {
             if (button != null) {
                 button.setText(slots.get(i).slotId);
                 if (slots.get(i).subId.length() == 0)
-                    button.setBackgroundResource(R.color.greenColor);// Change the text of the button
+                    button.setBackgroundResource(R.drawable.parking_button);// Change the text of the button
                 else {
                     button.setBackgroundResource(R.color.colorPrimary);
                 }
