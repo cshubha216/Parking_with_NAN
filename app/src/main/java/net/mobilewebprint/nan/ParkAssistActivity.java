@@ -60,11 +60,8 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /*
  * Note: as it stands, to run, do the following:
@@ -316,9 +313,9 @@ public class ParkAssistActivity extends AppCompatActivity {
                 button.setText(slots.get(i).slotId);
                 button.setTextColor(Color.YELLOW);
                 if (slots.get(i).subId.length() == 0)
-                    button.setBackgroundResource(R.drawable.parking_button);// Change the text of the button
+                    button.setBackgroundResource(R.drawable.parking_button_free);// Change the text of the button
                 else {
-                    button.setBackgroundResource(R.color.colorPrimary);
+                    button.setBackgroundResource(R.drawable.parking_button_occupied);
                 }
             }
 
