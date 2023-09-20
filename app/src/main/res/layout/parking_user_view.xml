@@ -190,10 +190,10 @@
         app:layout_constraintStart_toStartOf="parent">
 
         <TextView
-            android:id="@+id/debugTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
+            android:text="@string/debug_information"
             android:textColor="#FFFFFF"
             android:textSize="16sp" />
 
