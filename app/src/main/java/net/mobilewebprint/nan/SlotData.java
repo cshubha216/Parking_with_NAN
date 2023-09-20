@@ -91,22 +91,6 @@ class Constant {
 
                 }
             }
-            if(!restoredSlots.isEmpty()){
-
-                for (int i = 0; i < restoredSlots.size(); i++) {
-                    if (slotId.equals(restoredSlots.get(i).slotId)) {
-                        if (restoredSlots.get(i).subId.length() == 0){
-                            slots.set(i, new SlotData(slotId,myMacId));
-
-                        } else if(isUser) {
-                            slots.set(i, new SlotData(slotId,""));
-
-                        }
-
-                    }
-                }
-
-            }
         } catch (Exception e) {
             e.printStackTrace();
             return;
