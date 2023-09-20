@@ -1,5 +1,5 @@
 <resources>
-    <string name="com.wifiaware">WiFi Aware</string>
+    <string name="com.wifiaware">Smart Parking</string>
     <string name="action_settings">Settings</string>
     <string name="this_is_the_status">this is the status !!</string>
     <string name="initiator">Initiator</string>

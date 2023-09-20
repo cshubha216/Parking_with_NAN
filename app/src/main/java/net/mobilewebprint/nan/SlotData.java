@@ -74,13 +74,21 @@ class Constant {
         }
     }
 
-    public static void updateSlot(byte[] slot) {
+    public static void updateSlot(byte[] slot, byte[] myMac, boolean isUser) {
         try {
             ArrayList<SlotData> restoredSlots = bytesToArrayList(slot);
             String slotId= new String(slot, StandardCharsets.UTF_8);
+            String myMacId = new String(myMac, StandardCharsets.UTF_8);
             for (int i = 0; i < slots.size(); i++) {
                 if (slotId.equals(slots.get(i).slotId)) {
-                    slots.set(i, new SlotData(slotId,"adsa"));
+                    if (slots.get(i).subId.length() == 0){
+                        slots.set(i, new SlotData(slotId,myMacId));
+
+                    } else if(isUser) {
+                        slots.set(i, new SlotData(slotId,""));
+
+                    }
+
                 }
             }
         } catch (Exception e) {

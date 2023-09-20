@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.ConnectivityManager.NetworkCallback;
 import android.net.LinkProperties;
@@ -29,7 +28,6 @@ import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -60,8 +58,12 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 /*
  * Note: as it stands, to run, do the following:
@@ -104,7 +106,6 @@ public class ParkAssistActivity extends AppCompatActivity {
     private byte[] otherIP;
     private byte[] msgtosend;
     private String actionData;
-    private int bitString;
 
     /**
      * Handles initialization (creation) of the activity.
@@ -186,14 +187,14 @@ public class ParkAssistActivity extends AppCompatActivity {
 
             @Override
             public void onMessageSendSucceeded(int messageId) {
-                Toast.makeText(ParkAssistActivity.this, "Publisher Message sent success", Toast.LENGTH_LONG).show();
+                Toast.makeText(ParkAssistActivity.this, "Publisher Message sent success", Toast.LENGTH_SHORT).show();
                 super.onMessageSendSucceeded(messageId);
             }
 
             @Override
             public void onMessageSendFailed(int messageId) {
                 super.onMessageSendFailed(messageId);
-                Toast.makeText(ParkAssistActivity.this, "Publisher Message sent Failed", Toast.LENGTH_LONG).show();
+                Toast.makeText(ParkAssistActivity.this, "Publisher Message sent Failed", Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -202,7 +203,7 @@ public class ParkAssistActivity extends AppCompatActivity {
 
                 super.onMessageReceived(peerHandle, message);
                 peerHandle = peerHandle_;
-                // Why checking getSlots here .... 
+                // Why checking getSlots here ....
                 if (data.equals("getSlots")) {
                     publishDiscoverySession.sendMessage(peerHandle, MAC_ADDRESS_MESSAGE, Constant.getSlotsDataAsBytes());
                 } else {
@@ -218,7 +219,6 @@ public class ParkAssistActivity extends AppCompatActivity {
                     setOtherIPAddress(message);
                 }
 
-                peerHandle = peerHandle_;
 
                 if (publishDiscoverySession != null && peerHandle != null) {
                     publishDiscoverySession.sendMessage(peerHandle, MAC_ADDRESS_MESSAGE, myMac);
@@ -231,7 +231,7 @@ public class ParkAssistActivity extends AppCompatActivity {
     @TargetApi(26)
     private void subscribeToService() {
         if (wifiAwareSession == null) {
-            Toast.makeText(ParkAssistActivity.this, "wifiAwareSession is null", Toast.LENGTH_LONG).show();
+            Toast.makeText(ParkAssistActivity.this, "wifiAwareSession is null", Toast.LENGTH_SHORT).show();
             return;
         }
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
@@ -253,13 +253,14 @@ public class ParkAssistActivity extends AppCompatActivity {
                     setSlot(null);
                 }
                 if (subscribeDiscoverySession != null && peerHandle != null) {
+                    subscribeDiscoverySession.sendMessage(peerHandle, MAC_ADDRESS_MESSAGE, myMac);
                 }
             }
 
             @Override
             public void onSubscribeStarted(@NonNull SubscribeDiscoverySession session) {
                 super.onSubscribeStarted(session);
-                Toast.makeText(ParkAssistActivity.this, "onSubscribeStarted", Toast.LENGTH_LONG).show();
+                Toast.makeText(ParkAssistActivity.this, "onSubscribeStarted", Toast.LENGTH_SHORT).show();
                 subscribeDiscoverySession = session;
 
                 if (subscribeDiscoverySession != null && peerHandle != null) {
@@ -289,21 +290,22 @@ public class ParkAssistActivity extends AppCompatActivity {
             @Override
             public void onMessageSendSucceeded(int messageId) {
                 super.onMessageSendSucceeded(messageId);
-                Toast.makeText(ParkAssistActivity.this, "message sent success", Toast.LENGTH_LONG).show();
+                Toast.makeText(ParkAssistActivity.this, "message sent success", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onMessageSendFailed(int messageId) {
                 super.onMessageSendFailed(messageId);
-                Toast.makeText(ParkAssistActivity.this, "message sent failed", Toast.LENGTH_LONG).show();
+                Toast.makeText(ParkAssistActivity.this, "message sent failed", Toast.LENGTH_SHORT).show();
             }
         }, null);
     }
 
 
     void setSlot(byte[] message) {
-        if(message!=null)
-        Constant.updateSlot(message);
+        if(message != null) {
+            Constant.updateSlot(message, myMac, actionData.equals("user"));
+        }
         final ArrayList<SlotData> slots = Constant.getStaticSlots();
         for (int i = 0; i < 10; i++) {
             final int index = i;
@@ -311,19 +313,46 @@ public class ParkAssistActivity extends AppCompatActivity {
             Button button = findViewById(buttonId);
             if (button != null) {
                 button.setText(slots.get(i).slotId);
-                button.setTextColor(Color.BLACK);
-                if (slots.get(i).subId.length() == 0)
-                    button.setBackgroundResource(R.drawable.parking_button_free);// Change the text of the button
-                else {
-                    button.setBackgroundResource(R.drawable.parking_button_occupied);
+
+                if (actionData.equals("user")) {
+                    String myMacId = new String(myMac, StandardCharsets.UTF_8);
+
+                    if (slots.get(i).slotId.equals(myMacId)) {
+                        Toast.makeText(ParkAssistActivity.this, "Slot released from Manager", Toast.LENGTH_SHORT).show();
+                    }
                 }
+                if (slots.get(i).subId.length() == 0)
+                    button.setBackgroundResource(R.drawable.parking_button_free);
+                    else {
+                    button.setBackgroundResource(R.drawable.parking_button_occupied);
+                    }
+
+
+
             }
 
+            int finalI = i;
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (actionData.equals("manager")) {
-                        Toast.makeText(ParkAssistActivity.this, "Manager wont allow to select slot ", Toast.LENGTH_SHORT).show();
+                        if (slots.get(finalI).subId.length() != 0){
+                            Constant.updateSlot(slots.get(index).slotId.getBytes(), myMac, true);
+                            button.setBackgroundResource(R.color.greenColor);
+                            if (publishDiscoverySession != null && peerHandle != null){
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                    publishDiscoverySession.sendMessage(peerHandle, MAC_ADDRESS_MESSAGE,  slots.get(index).slotId.getBytes());
+
+
+                                }
+                            }
+                            Toast.makeText(ParkAssistActivity.this, "Parking slot released  ", Toast.LENGTH_SHORT).show();
+
+                        } else {
+                            Toast.makeText(ParkAssistActivity.this, "Manager wont allow to select slot ", Toast.LENGTH_SHORT).show();
+
+                        }
+
                         return;
                     }
                     showConsentDialog( slots.get(index).slotId.getBytes());
@@ -348,13 +377,31 @@ public class ParkAssistActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    ArrayList<SlotData> temp = new ArrayList<SlotData>();
                     if (subscribeDiscoverySession != null){
+                        String otherMacId;
+                        if(otherMac != null){
+                            otherMacId = new String(otherMac, StandardCharsets.UTF_8);
+
+                        } else {
+                            otherMacId = "";
+                        }
+                        final ArrayList<SlotData> slots = Constant.getStaticSlots();
+                        String myMacId = new String(myMac, StandardCharsets.UTF_8);
+
+
+                        for (int i = 0; i < slots.size(); i++) {
+                            if (slots.get(i).subId.equals(myMacId)) {
+                                Toast.makeText(ParkAssistActivity.this, "One Slot already assigned for this user", Toast.LENGTH_SHORT).show();
+                                consentDialog.dismiss();
+                                return;
+                            }
+                        }
                         subscribeDiscoverySession.sendMessage(peerHandle, MAC_ADDRESS_MESSAGE, slotId);
+
 
                     }
                     else {
-                        Toast.makeText(ParkAssistActivity.this, "subscribeDiscoverySession is null", Toast.LENGTH_LONG).show();
+                        Toast.makeText(ParkAssistActivity.this, "subscribeDiscoverySession is null", Toast.LENGTH_SHORT).show();
                     }
                 }
 
@@ -393,7 +440,7 @@ public class ParkAssistActivity extends AppCompatActivity {
                     return;
 
                 } else {
-                    Toast.makeText(this, "no sd card access", Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, "no sd card access", Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -826,15 +873,6 @@ public class ParkAssistActivity extends AppCompatActivity {
         Thread clientThread = new Thread(clientTask);
         clientThread.start();
 
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK) {
-            Toast.makeText(this, Integer.toString(data.getIntExtra("bit_string", 0)), Toast.LENGTH_LONG).show();
-            bitString = data.getIntExtra("bit_string", -1);
-        }
     }
 
     void showPopUp() {

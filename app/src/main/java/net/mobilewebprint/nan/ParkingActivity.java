@@ -27,7 +27,7 @@ public class ParkingActivity extends AppCompatActivity {
 
     private void addParkingSpot(final String spotName, int marginLeft, int marginTop) {
         ImageView parkingSpot = new ImageView(this);
-        parkingUserViewBinding.parkingLayout.setLayoutParams(new RelativeLayout.LayoutParams(40, 40));
+        parkingUserViewBinding.legendLayout.setLayoutParams(new RelativeLayout.LayoutParams(40, 40));
 
         parkingSpot.setBackgroundResource(R.drawable.parking_indicator_foreground);
         parkingSpot.setX(marginLeft);
@@ -41,6 +41,6 @@ public class ParkingActivity extends AppCompatActivity {
                 view -> Toast.makeText(getApplicationContext(), "Car Parked", Toast.LENGTH_LONG).show()
         );
 
-        parkingUserViewBinding.parkingLayout.addView(parkingSpot);
+        parkingUserViewBinding.legendLayout.addView(parkingSpot);
     }
 }
