@@ -91,6 +91,9 @@ public class ParkAssistActivity extends AppCompatActivity {
     private PublishDiscoverySession publishDiscoverySession;
     private SubscribeDiscoverySession subscribeDiscoverySession;
     private PeerHandle peerHandle;
+    private String selectedSlotId;
+
+    private List<PeerHandle> peerHandleList = new ArrayList<>();
     private byte[] myMac;
     private byte[] otherMac;
 
@@ -124,6 +127,7 @@ public class ParkAssistActivity extends AppCompatActivity {
         publishDiscoverySession = null;
         subscribeDiscoverySession = null;
         peerHandle = null;
+        selectedSlotId = null;
         final Bundle extras = getIntent().getExtras();
         actionData = extras.get("action").toString();
 
@@ -175,13 +179,18 @@ public class ParkAssistActivity extends AppCompatActivity {
         wifiAwareSession.publish(config, new DiscoverySessionCallback() {
             @Override
             public void onPublishStarted(@NonNull PublishDiscoverySession session) {
-                setContentView(R.layout.activity_grid_view_users);
-                setSlot(null);
+                setContentView(R.layout.parking_user_view);
+                setSlot(Constant.getSlotsDataAsBytes());
                 Toast.makeText(ParkAssistActivity.this, "Publish Nan Started", Toast.LENGTH_SHORT).show();
                 super.onPublishStarted(session);
                 publishDiscoverySession = session;
-                if (publishDiscoverySession != null && peerHandle != null) {
-                    publishDiscoverySession.sendMessage(peerHandle, MAC_ADDRESS_MESSAGE, Constant.getSlotsDataAsBytes());
+                if (publishDiscoverySession != null && !peerHandleList.isEmpty()) {
+
+                    for(PeerHandle _peerHandle :peerHandleList ){
+                        publishDiscoverySession.sendMessage(_peerHandle, MAC_ADDRESS_MESSAGE, Constant.getSlotsDataAsBytes());
+
+                    }
+
                 }
             }
 
@@ -203,12 +212,22 @@ public class ParkAssistActivity extends AppCompatActivity {
 
                 super.onMessageReceived(peerHandle, message);
                 peerHandle = peerHandle_;
+                if(!peerHandleList.stream().anyMatch(p -> p.equals(peerHandle_))){
+                    peerHandleList.add(peerHandle_);
+
+                }
                 // Why checking getSlots here ....
                 if (data.equals("getSlots")) {
-                    publishDiscoverySession.sendMessage(peerHandle, MAC_ADDRESS_MESSAGE, Constant.getSlotsDataAsBytes());
+                    for(PeerHandle _peerHandle :peerHandleList ){
+                        publishDiscoverySession.sendMessage(_peerHandle, MAC_ADDRESS_MESSAGE, Constant.getSlotsDataAsBytes());
+
+                    }
                 } else {
                     setSlot(message);
-                    publishDiscoverySession.sendMessage(peerHandle, MAC_ADDRESS_MESSAGE,message);
+                    for(PeerHandle _peerHandle :peerHandleList ){
+                        publishDiscoverySession.sendMessage(_peerHandle, MAC_ADDRESS_MESSAGE, message);
+
+                    }
                 }
                 if (message.length == 2) {
                     portToUse = byteToPortInt(message);
@@ -220,8 +239,12 @@ public class ParkAssistActivity extends AppCompatActivity {
                 }
 
 
-                if (publishDiscoverySession != null && peerHandle != null) {
-                    publishDiscoverySession.sendMessage(peerHandle, MAC_ADDRESS_MESSAGE, myMac);
+                if (publishDiscoverySession != null && !peerHandleList.isEmpty()) {
+                    for(PeerHandle _peerHandle :peerHandleList ){
+                        publishDiscoverySession.sendMessage(_peerHandle, MAC_ADDRESS_MESSAGE, myMac);
+
+                    }
+
                 }
             }
         }, null);
@@ -248,12 +271,18 @@ public class ParkAssistActivity extends AppCompatActivity {
             public void onServiceDiscovered(PeerHandle peerHandle_, byte[] serviceSpecificInfo, List<byte[]> matchFilter) {
                 super.onServiceDiscovered(peerHandle, serviceSpecificInfo, matchFilter);
                 peerHandle = peerHandle_;
+                if(!peerHandleList.stream().anyMatch(p -> p.equals(peerHandle_))){
+                    peerHandleList.add(peerHandle_);
+
+                }
                 if (peerHandle_ != null) {
                     setContentView(R.layout.parking_user_view);
                     setSlot(null);
                 }
-                if (subscribeDiscoverySession != null && peerHandle != null) {
-                    subscribeDiscoverySession.sendMessage(peerHandle, MAC_ADDRESS_MESSAGE, myMac);
+                if (subscribeDiscoverySession != null && !peerHandleList.isEmpty()) {
+                    for(PeerHandle _peerHandle :peerHandleList ){
+                        subscribeDiscoverySession.sendMessage(_peerHandle, MAC_ADDRESS_MESSAGE, myMac);
+                    }
                 }
             }
 
@@ -263,9 +292,12 @@ public class ParkAssistActivity extends AppCompatActivity {
                 Toast.makeText(ParkAssistActivity.this, "onSubscribeStarted", Toast.LENGTH_SHORT).show();
                 subscribeDiscoverySession = session;
 
-                if (subscribeDiscoverySession != null && peerHandle != null) {
+                if (subscribeDiscoverySession != null && !peerHandleList.isEmpty()) {
                     final byte[] slotKey = "getSlots".getBytes();
-                    subscribeDiscoverySession.sendMessage(peerHandle, MAC_ADDRESS_MESSAGE, slotKey);
+
+                    for(PeerHandle _peerHandle :peerHandleList ){
+                        subscribeDiscoverySession.sendMessage(_peerHandle, MAC_ADDRESS_MESSAGE, slotKey);
+                    }
                     Log.d("nanSUBSCRIBE", "onServiceStarted send mac");
                 }
             }
@@ -313,19 +345,30 @@ public class ParkAssistActivity extends AppCompatActivity {
             Button button = findViewById(buttonId);
             if (button != null) {
                 button.setText(slots.get(i).slotId);
+                String myMacId = new String(myMac, StandardCharsets.UTF_8);
+
 
                 if (actionData.equals("user")) {
-                    String myMacId = new String(myMac, StandardCharsets.UTF_8);
 
                     if (slots.get(i).slotId.equals(myMacId)) {
                         Toast.makeText(ParkAssistActivity.this, "Slot released from Manager", Toast.LENGTH_SHORT).show();
                     }
                 }
-                if (slots.get(i).subId.length() == 0)
+                if (slots.get(i).subId.length() == 0) {
                     button.setBackgroundResource(R.drawable.parking_button_free);
-                    else {
-                    button.setBackgroundResource(R.drawable.parking_button_occupied);
+                    if(slots.get(i).slotId.equals(selectedSlotId)){
+                        selectedSlotId = null;
                     }
+
+                } else {
+                    if(slots.get(i).slotId.equals(selectedSlotId)) {
+
+                        button.setBackgroundResource(R.drawable.parking_button_for_self);
+
+                        } else {
+                            button.setBackgroundResource(R.drawable.parking_button_occupied);
+                        }
+                }
 
 
 
@@ -338,10 +381,13 @@ public class ParkAssistActivity extends AppCompatActivity {
                     if (actionData.equals("manager")) {
                         if (slots.get(finalI).subId.length() != 0){
                             Constant.updateSlot(slots.get(index).slotId.getBytes(), myMac, true);
-                            button.setBackgroundResource(R.color.greenColor);
-                            if (publishDiscoverySession != null && peerHandle != null){
+                            button.setBackgroundResource(R.drawable.parking_button_free);
+                            if (publishDiscoverySession != null && !peerHandleList.isEmpty()){
                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                                    publishDiscoverySession.sendMessage(peerHandle, MAC_ADDRESS_MESSAGE,  slots.get(index).slotId.getBytes());
+
+                                        for (PeerHandle _peerHandle : peerHandleList) {
+                                            publishDiscoverySession.sendMessage(_peerHandle, MAC_ADDRESS_MESSAGE, slots.get(index).slotId.getBytes());
+                                    }
 
 
                                 }
@@ -355,7 +401,15 @@ public class ParkAssistActivity extends AppCompatActivity {
 
                         return;
                     }
-                    showConsentDialog( slots.get(index).slotId.getBytes());
+                    if(slots.get(index).slotId.equals(selectedSlotId)){
+
+                        Toast.makeText(ParkAssistActivity.this, "Slot is already selected", Toast.LENGTH_SHORT).show();
+
+                    } else if (actionData.equals("user") && slots.get(finalI).subId.length() != 0) {
+                        Toast.makeText(ParkAssistActivity.this, "Slot is already Taken by someone", Toast.LENGTH_SHORT).show();
+                    }else {
+                        showConsentDialog( slots.get(index).slotId.getBytes());
+                    }
 
                 }
             });
@@ -390,12 +444,15 @@ public class ParkAssistActivity extends AppCompatActivity {
 
 
                         for (int i = 0; i < slots.size(); i++) {
-                            if (slots.get(i).subId.equals(myMacId)) {
+                            if( slots.get(i).slotId.equals(selectedSlotId)) {
                                 Toast.makeText(ParkAssistActivity.this, "One Slot already assigned for this user", Toast.LENGTH_SHORT).show();
                                 consentDialog.dismiss();
                                 return;
                             }
                         }
+                        String slotIdString= new String(slotId, StandardCharsets.UTF_8);
+                        selectedSlotId = slotIdString;
+
                         subscribeDiscoverySession.sendMessage(peerHandle, MAC_ADDRESS_MESSAGE, slotId);
 
 
